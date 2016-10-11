@@ -13,7 +13,7 @@ output:
     reveal_options:
       slideNumber: true
       previewLinks: true
-      data-background-image: "prezentacja/bg-small.png"
+      data-background-image: "imgs/bg-small.png"
 ---
 
 
@@ -40,12 +40,17 @@ opts_chunk$set(
 )
 ```
 
+# The process of creating an application {data-background="imgs/bg-small.png"}
+
+## Workflow {data-background="imgs/bg-small.png"}
+
+![workflow](imgs/workflow.png)
 
 # Collecting the data from Elasticsearch {data-background="imgs/bg-small.png"}
 
-## {data-background="imgs/bg-small.png"}
+## What is Elasticsearch? {data-background="imgs/bg-small.png"}
 
-> [Elasticsearch is a search engine based on Lucene. It provides a distributed, multitenant-capable full-text search engine with an HTTP web interface and schema-free JSON documents. Elasticsearch is developed in Java and is released as open source under the terms of the Apache License. Elasticsearch is the most popular enterprise search engine followed by Apache Solr, also based on Lucene.](https://en.wikipedia.org/wiki/Elasticsearch)
+> [Elasticsearch is a search engine based on Lucene. It provides a distributed, multitenant-capable full-text search engine with an HTTP web interface and schema-free JSON documents.</small>](https://en.wikipedia.org/wiki/Elasticsearch)
 
 ## <small>[`elastic`](https://cran.r-project.org/web/packages/elastic/index.html) package</small> {data-background="imgs/bg-small.png"}
 
@@ -83,7 +88,7 @@ nrow(iris_data)
 
 ## <small>Classification tree</small> {data-background="imgs/bg-small.png"}
 
-```{r}
+```{r, fig.height = 4}
 library(rpart)
 fit <- rpart(Species ~ ., data = iris_data)
 rattle::fancyRpartPlot(fit)
@@ -112,9 +117,7 @@ cat(msg <- paste0('{"sendDate":"', Sys.time(),'","model":{',rules, "}"))
 ```
 ```{r, eval=FALSE}
 library(rkafka)
-producer <- rkafka.createProducer("127.0.0.1:9092",
-                                  "sync","none",
-                                  "kafka.serializer.StringEncoder")
+producer <- rkafka.createProducer("127.0.0.1:9092")
 rkafka.send(producer, 
             topicName = "irisModel",
             ip = "irisModel",
@@ -132,11 +135,11 @@ rkafka.closeProducer(producer)
 ## <small>Combining Zabbix with R</small> {data-background="imgs/bg-small.png"}
 
 ```{r, eval = FALSE}
-system2("zabbix_sender",
-        args = c('-z', 'server.zabbix.com', # Zabbix server host
-                 '-s', 'serverofmyapp.com', # technical name of monitored host
-                 '-k', 'iris_model_monitoring', # item key
-                 '-o', 'status of my app' )) # value to send
+system2("zabbix_sender", args = c(
+  '-z', 'server.zabbix.com', # Zabbix server host
+  '-s', 'serverofmyapp.com', # technical name of monitored host
+  '-k', 'iris_model_monitoring', # item key
+  '-o', 'status of my app' )) # value to send
 ```
 
 Also: [`RZabbix`](https://cran.r-project.org/web/packages/RZabbix/index.html) package.

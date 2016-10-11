@@ -122,10 +122,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     <h3 class="date">October 13, 2016</h3>
 </section>
 
-<section><section id="collecting-the-data-from-elasticsearch" class="titleslide slide level1" data-background="imgs/bg-small.png"><h1>Collecting the data from Elasticsearch</h1></section><section id="section" class="slide level2" data-background="imgs/bg-small.png">
-<h1></h1>
+<section><section id="the-process-of-creating-an-application" class="titleslide slide level1" data-background="imgs/bg-small.png"><h1>The process of creating an application</h1></section><section id="workflow" class="slide level2" data-background="imgs/bg-small.png">
+<h1>Workflow</h1>
+<p><img src="imgs/workflow.png" alt="workflow" /></p>
+</section></section>
+<section><section id="collecting-the-data-from-elasticsearch" class="titleslide slide level1" data-background="imgs/bg-small.png"><h1>Collecting the data from Elasticsearch</h1></section><section id="what-is-elasticsearch" class="slide level2" data-background="imgs/bg-small.png">
+<h1>What is Elasticsearch?</h1>
 <blockquote>
-<p><a href="https://en.wikipedia.org/wiki/Elasticsearch">Elasticsearch is a search engine based on Lucene. It provides a distributed, multitenant-capable full-text search engine with an HTTP web interface and schema-free JSON documents. Elasticsearch is developed in Java and is released as open source under the terms of the Apache License. Elasticsearch is the most popular enterprise search engine followed by Apache Solr, also based on Lucene.</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Elasticsearch">Elasticsearch is a search engine based on Lucene. It provides a distributed, multitenant-capable full-text search engine with an HTTP web interface and schema-free JSON documents.</small></a></p>
 </blockquote>
 </section><section id="elastic-package" class="slide level2" data-background="imgs/bg-small.png">
 <h1><small><a href="https://cran.r-project.org/web/packages/elastic/index.html"><code>elastic</code></a> package</small></h1>
@@ -180,9 +184,7 @@ rattle::<span class="kw">fancyRpartPlot</span>(fit)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cat</span>(msg &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;{&quot;sendDate&quot;:&quot;&#39;</span>, <span class="kw">Sys.time</span>(),<span class="st">&#39;&quot;,&quot;model&quot;:{&#39;</span>,rules, <span class="st">&quot;}&quot;</span>))</code></pre></div>
 <pre><code>{&quot;sendDate&quot;:&quot;2016-10-11 14:14:42&quot;,&quot;model&quot;:{&quot;setosa&quot;:{&quot;Petal_Length&lt;2.45&quot;},&quot;virginica&quot;:{&quot;Petal_Length&gt;=2.45&quot;,&quot;Petal_Width&gt;=1.65&quot;},&quot;versicolor&quot;:{&quot;Petal_Length&gt;=2.45&quot;,&quot;Petal_Width&lt;1.65&quot;}}</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rkafka)
-producer &lt;-<span class="st"> </span><span class="kw">rkafka.createProducer</span>(<span class="st">&quot;127.0.0.1:9092&quot;</span>,
-                                  <span class="st">&quot;sync&quot;</span>,<span class="st">&quot;none&quot;</span>,
-                                  <span class="st">&quot;kafka.serializer.StringEncoder&quot;</span>)
+producer &lt;-<span class="st"> </span><span class="kw">rkafka.createProducer</span>(<span class="st">&quot;127.0.0.1:9092&quot;</span>)
 <span class="kw">rkafka.send</span>(producer, 
             <span class="dt">topicName =</span> <span class="st">&quot;irisModel&quot;</span>,
             <span class="dt">ip =</span> <span class="st">&quot;irisModel&quot;</span>,
@@ -196,11 +198,11 @@ producer &lt;-<span class="st"> </span><span class="kw">rkafka.createProducer</s
 </blockquote>
 </section><section id="combining-zabbix-with-r" class="slide level2" data-background="imgs/bg-small.png">
 <h1><small>Combining Zabbix with R</small></h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system2</span>(<span class="st">&quot;zabbix_sender&quot;</span>,
-        <span class="dt">args =</span> <span class="kw">c</span>(<span class="st">&#39;-z&#39;</span>, <span class="st">&#39;server.zabbix.com&#39;</span>, <span class="co"># Zabbix server host</span>
-                 <span class="st">&#39;-s&#39;</span>, <span class="st">&#39;serverofmyapp.com&#39;</span>, <span class="co"># technical name of monitored host</span>
-                 <span class="st">&#39;-k&#39;</span>, <span class="st">&#39;iris_model_monitoring&#39;</span>, <span class="co"># item key</span>
-                 <span class="st">&#39;-o&#39;</span>, <span class="st">&#39;status of my app&#39;</span> )) <span class="co"># value to send</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system2</span>(<span class="st">&quot;zabbix_sender&quot;</span>, <span class="dt">args =</span> <span class="kw">c</span>(
+  <span class="st">&#39;-z&#39;</span>, <span class="st">&#39;server.zabbix.com&#39;</span>, <span class="co"># Zabbix server host</span>
+  <span class="st">&#39;-s&#39;</span>, <span class="st">&#39;serverofmyapp.com&#39;</span>, <span class="co"># technical name of monitored host</span>
+  <span class="st">&#39;-k&#39;</span>, <span class="st">&#39;iris_model_monitoring&#39;</span>, <span class="co"># item key</span>
+  <span class="st">&#39;-o&#39;</span>, <span class="st">&#39;status of my app&#39;</span> )) <span class="co"># value to send</span></code></pre></div>
 <p>Also: <a href="https://cran.r-project.org/web/packages/RZabbix/index.html"><code>RZabbix</code></a> package.</p>
 </section></section>
 <section><section id="reproducibility-of-the-application" class="titleslide slide level1" data-background="imgs/bg-small.png"><h1>Reproducibility of the application</h1></section><section id="docker" class="slide level2" data-background="imgs/bg-small.png">
