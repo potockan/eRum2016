@@ -170,6 +170,11 @@ WORKDIR /app
 CMD R -f /app/run.R
 ```
 
+```bash
+docker build -t tag path
+docker run name
+```
+
 # Thank you for your attention! {data-background="imgs/bg-small.png"}
 
 
